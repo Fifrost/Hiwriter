@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ form.instance.pk|yesno:"Edit Post,Create Post" }} - HiWriter Blog{% endblock %}
+
+{% block content %}
+<h1>{{ form.instance.pk|yesno:"Edit Post,Create Post" }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{{ form.instance.pk|yesno:"Update,Create" }}</button>
+</form>
+{% endblock %}

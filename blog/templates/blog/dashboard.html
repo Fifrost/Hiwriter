@@ -1,0 +1,59 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome to Your Dashboard</h1>
+<hr>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_posts }}</h3>
+                <p>Total Posts</p>
+                <a href="{% url 'post_create' %}" class="btn btn-primary">Create New Post</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_comments }}</h3>
+                <p>Total Comments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>Profile</h3>
+                <p>View and update your profile</p>
+                <a href="{% url 'profile' %}" class="btn btn-secondary">Go to Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<h2>Your Posts</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></td>
+            <td>{{ post.created_at }}</td>
+            <td>
+                <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h1>Your Profile</h1>
+<hr>
+<div class="card">
+    <div class="card-body text-center">
+        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="150" height="150">
+        <h5 class="card-title mt-3">User Details</h5>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>First Name:</strong> {{ first_name }}</p>
+        <p><strong>Last Name:</strong> {{ last_name }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        <p><strong>Date Joined:</strong> {{ date_joined }}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}

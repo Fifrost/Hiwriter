@@ -1,0 +1,265 @@
+/* CSS untuk gambar postingan */
+.post-image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Gambar profil di navbar */
+.navbar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+/* Gambar profil */
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Placeholder jika foto profil tidak ada */
+.profile-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/*landing page */
+
+/* Landing page CSS */
+.landing-page {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.landing-page .container {
+    text-align: center;
+}
+
+.landing-page h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.landing-page .buttons {
+    margin-top: 20px;
+}
+
+.landing-page .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.landing-page .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.landing-page .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.landing-page .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.landing-page .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* CSS khusus untuk halaman login */
+.login-page {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.login-page .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-page .login-box {
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.login-page h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.login-page .input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.login-page .input-group label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+}
+
+.login-page .input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.login-page .input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.login-page .btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-page .btn:hover {
+    background-color: #0056b3;
+}
+
+.login-page .signup-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-page .signup-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-page .signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* CSS khusus untuk halaman register */
+.register-page {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.register-page .register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-page .register-box {
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.register-page h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.register-page .input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.register-page .input-group label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+}
+
+.register-page .input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.register-page .input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.register-page .btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.register-page .btn:hover {
+    background-color: #0056b3;
+}
+
+.register-page .login-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-page .login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-page .login-link a:hover {
+    text-decoration: underline;
+}

@@ -9,7 +9,7 @@
     <div class="col-md-4">
         <div class="card text-center">
             <div class="card-body">
-                <h3>{{ total_posts }}</h3>
+                <h3>{{ total_posts|default:0 }}</h3>
                 <p>Total Posts</p>
                 <a href="{% url 'post_create' %}" class="btn btn-primary">Create New Post</a>
             </div>
@@ -18,7 +18,7 @@
     <div class="col-md-4">
         <div class="card text-center">
             <div class="card-body">
-                <h3>{{ total_comments }}</h3>
+                <h3>{{ total_comments|default:0 }}</h3>
                 <p>Total Comments</p>
             </div>
         </div>
@@ -52,8 +52,18 @@
                 <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning btn-sm">Edit</a>
                 <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger btn-sm">Delete</a>
             </td>
+
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No posts available</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% if error %}
+<div class="alert alert-danger">
+    <p>Error: {{ error }}</p>
+</div>
+{% endif %}
 {% endblock %}

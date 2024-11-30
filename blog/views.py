@@ -1,24 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.forms import UserCreationForm
-from .models import Post, Comment
-from .forms import PostForm, CommentForm, UserForm, ProfileForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash, logout
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Post, Comment
+from .forms import PostForm, CommentForm, UserForm, ProfileForm
+from django.views.generic import TemplateView
+
+def landing_page(request):
+    return render(request, 'blog/landing_page.html')
 
 # Home Page
 class HomeView(ListView):
     model = Post
     template_name = 'blog/home.html'
     context_object_name = 'posts'
-
-# Post Detail
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
 
 # Create Post
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -31,12 +30,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
 # Edit Post
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
+
 
 # Delete Post
 class PostDeleteView(LoginRequiredMixin, DeleteView):
@@ -44,18 +45,21 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('home')
 
+
+# Register User
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f"Account created for {username}!")
-            return redirect('login')
+            return redirect('login')  # Redirect ke halaman login setelah registrasi berhasil
     else:
         form = UserCreationForm()
+
     return render(request, 'blog/register.html', {'form': form})
 
+
+# User Dashboard
 @login_required
 def dashboard(request):
     user_posts = Post.objects.filter(author=request.user)
@@ -65,9 +69,13 @@ def dashboard(request):
         'total_posts': user_posts.count(),
         'total_comments': user_comments.count(),
         'posts': user_posts,
+        'no_posts': user_posts.count() == 0,
+        'no_comments': user_comments.count() == 0,
     }
     return render(request, 'blog/dashboard.html', context)
 
+
+# User Profile
 @login_required
 def profile(request):
     user = request.user
@@ -80,6 +88,8 @@ def profile(request):
     }
     return render(request, 'blog/profile.html', context)
 
+
+# Edit User Profile
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
@@ -98,3 +108,53 @@ def edit_profile(request):
         'profile_form': profile_form,
     }
     return render(request, 'blog/edit_profile.html', context)
+
+
+# Post Detail
+@login_required
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comments.all()
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+
+    context = {
+        'post': post,
+        'comments': comments,
+        'form': form,
+    }
+    return render(request, 'blog/post_detail.html', context)
+
+
+# Change Password
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Menghindari logout setelah password diubah
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'blog/change_password.html', {'form': form})
+
+
+# Custom Logout
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('login')

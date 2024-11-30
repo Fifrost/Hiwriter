@@ -1,28 +1,39 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}{{ object.title }} - HiWriter Blog{% endblock %}
-
 {% block content %}
-<h1>{{ object.title }}</h1>
-<p>By {{ object.author.username }} on {{ object.created_at }}</p>
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p><small>By {{ post.author.username }} on {{ post.created_at }}</small></p>
 <hr>
-<p>{{ object.content }}</p>
+
+<!-- Menampilkan gambar jika ada -->
+{% if post.image %}
+    <div class="post-image-container">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid post-image">
+    </div>
+{% endif %}
 
 <h3>Comments</h3>
-<ul>
-    {% for comment in object.comments.all %}
-        <li><strong>{{ comment.author }}:</strong> {{ comment.content }}</li>
+<div>
+    {% for comment in comments %}
+        <div>
+            <p><strong>{{ comment.author.username }}</strong>:</p>
+            <p>{{ comment.content }}</p>
+            <p><small>{{ comment.created_at }}</small></p>
+        </div>
+        <hr>
     {% endfor %}
-</ul>
+</div>
 
+<h3>Leave a Comment</h3>
 {% if user.is_authenticated %}
-<h4>Leave a Comment</h4>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Post Comment</button>
 </form>
 {% else %}
-<p><a href="/login/">Login</a> to leave a comment.</p>
+<p><a href="{% url 'login' %}">Login</a> to leave a comment.</p>
 {% endif %}
+
 {% endblock %}

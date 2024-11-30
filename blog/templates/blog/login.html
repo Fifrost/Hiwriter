@@ -1,12 +1,33 @@
-{% extends 'blog/base.html' %}
+{% load static %}
 
-{% block title %}Login{% endblock %}
-
-{% block content %}
-<h1>Login</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HiWriter Blog</title>
+    <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login to Your Account</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <div class="signup-link">
+                Don't have an account? <a href="{% url 'register' %}">Sign up here</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

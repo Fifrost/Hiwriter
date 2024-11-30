@@ -17,4 +17,10 @@
     <button type="submit" class="btn btn-success">Save Changes</button>
     <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
 </form>
+
+{% if error %}
+    <div class="alert alert-danger mt-3">
+        {{ error }}
+    </div>
+{% endif %}
 {% endblock %}

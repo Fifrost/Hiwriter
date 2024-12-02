@@ -1,14 +1,15 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Post, Comment
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
 from .forms import PostForm, CommentForm, UserForm, ProfileForm
-from django.views.generic import TemplateView
+from .models import Post, Comment, Tag, Category
+
 
 def landing_page(request):
     return render(request, 'blog/landing_page.html')
@@ -30,13 +31,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-
 # Edit Post
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('home')
 
 
 # Delete Post
@@ -158,3 +158,39 @@ def custom_logout(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect('login')
+
+# Category Detail
+class CategoryDetailView(ListView):
+    model = Post
+    template_name = 'blog/category_detail.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # Ambil kategori berdasarkan ID yang diberikan di URL
+        category = get_object_or_404(Category, pk=self.kwargs['pk'])
+        # Kembalikan postingan yang terkait dengan kategori tersebut
+        return Post.objects.filter(category=category)
+
+    def get_context_data(self, **kwargs):
+        # Menambahkan kategori ke dalam context untuk digunakan di template
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, pk=self.kwargs['pk'])
+        return context
+
+# Tag Detail
+class TagDetailView(ListView):
+    model = Post
+    template_name = 'blog/tag_detail.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # Ambil tag berdasarkan ID yang diberikan di URL
+        tag = get_object_or_404(Tag, pk=self.kwargs['pk'])
+        # Kembalikan postingan yang memiliki tag tersebut
+        return Post.objects.filter(tags=tag)
+
+    def get_context_data(self, **kwargs):
+        # Menambahkan tag ke dalam context untuk digunakan di template
+        context = super().get_context_data(**kwargs)
+        context['tag'] = get_object_or_404(Tag, pk=self.kwargs['pk'])
+        return context

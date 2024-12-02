@@ -1,0 +1,13 @@
+<!-- blog/category_detail.html -->
+<h1>Posts in Category: {{ category.name }}</h1>
+
+<ul>
+    {% for post in posts %}
+        <li>
+            <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a> -
+            <small>by {{ post.author.username }} on {{ post.created_at }}</small>
+        </li>
+    {% empty %}
+        <p>No posts found in this category.</p>
+    {% endfor %}
+</ul>

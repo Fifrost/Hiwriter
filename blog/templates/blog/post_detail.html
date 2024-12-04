@@ -4,12 +4,27 @@
 <h1>{{ post.title }}</h1>
 <p>{{ post.content }}</p>
 <p><small>By {{ post.author.username }} on {{ post.created_at }}</small></p>
+
+<!-- Menampilkan kategori -->
+<p><strong>Category:</strong> <a href="{% url 'category_detail' post.category.id %}">{{ post.category.name }}</a></p>
+
+<!-- Menampilkan tag -->
+<p><strong>Tags:</strong>
+    {% for tag in post.tags.all %}
+        <a href="{% url 'tag_detail' tag.id %}" class="badge badge-info" style="color: black;">{{ tag.name }}</a>
+    {% empty %}
+        <span>No tags available</span>
+    {% endfor %}
+</p>
+
 <hr>
 
 <!-- Menampilkan gambar jika ada -->
 {% if post.image %}
     <div class="post-image-container">
-        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid post-image">
+    <img src="{{ post.image.url }}" alt="{{ post.title }}"
+         class="img-fluid post-image"
+         style="max-width: 100%; height: auto; max-height: 400px;">
     </div>
 {% endif %}
 

@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
@@ -21,11 +21,14 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
 class Tag(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

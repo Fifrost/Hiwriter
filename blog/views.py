@@ -6,8 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
-from .forms import PostForm, CommentForm, UserForm, ProfileForm
+from django.http import JsonResponse
+from .forms import PostForm, CommentForm, UserForm, ProfileForm, CustomUserCreationForm
 from .models import Post, Comment, Tag, Category
 
 
@@ -29,6 +29,15 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        post = form.save(commit=False)
+
+        # Menetapkan tags ke post yang baru
+        selected_tags = self.request.POST.getlist('tags')  # Mendapatkan tag yang dipilih
+        post.save()  # Simpan post terlebih dahulu
+
+        post.tags.set(selected_tags)  # Menetapkan tags
+        post.save()  # Simpan ulang
+
         return super().form_valid(form)
 
 # Edit Post
@@ -52,12 +61,15 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')  # Redirect ke halaman login setelah registrasi berhasil
+            messages.success(request, "Account created successfully!")
+            return redirect('login')
+        else:
+            # Menangani jika password tidak cocok atau kesalahan lainnya
+            messages.error(request, "Passwords do not match!")
     else:
         form = UserCreationForm()
 
     return render(request, 'blog/register.html', {'form': form})
-
 
 # User Dashboard
 @login_required
@@ -163,7 +175,7 @@ def custom_logout(request):
 class CategoryDetailView(ListView):
     model = Post
     template_name = 'blog/category_detail.html'
-    context_object_name = 'posts'
+    context_object_name = 'category'
 
     def get_queryset(self):
         # Ambil kategori berdasarkan ID yang diberikan di URL
@@ -181,7 +193,7 @@ class CategoryDetailView(ListView):
 class TagDetailView(ListView):
     model = Post
     template_name = 'blog/tag_detail.html'
-    context_object_name = 'posts'
+    context_object_name = 'tag'
 
     def get_queryset(self):
         # Ambil tag berdasarkan ID yang diberikan di URL
@@ -194,3 +206,43 @@ class TagDetailView(ListView):
         context = super().get_context_data(**kwargs)
         context['tag'] = get_object_or_404(Tag, pk=self.kwargs['pk'])
         return context
+
+def get_tags(request, category_id):
+    # Mengambil tag yang sesuai dengan kategori yang dipilih
+    tags = Tag.objects.filter(category_id=category_id)
+    tag_list = [{'id': tag.id, 'name': tag.name} for tag in tags]
+    return JsonResponse({'tags': tag_list})
+
+
+
+def create_post(request):
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+
+            # Ambil tags yang dipilih
+            selected_tags = request.POST.getlist('tags')  # Mengambil semua ID tag yang dipilih
+            post.tags.set(selected_tags)  # Menetapkan tags pada post
+
+            post.save()
+
+            # Redirect atau beri response
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm()
+
+    return render(request, 'blog/create_post.html', {'form': form})
+
+def get_tags_by_category(request):
+    category_id = request.GET.get('category_id')
+    if category_id:
+        try:
+            category = Category.objects.get(id=category_id)
+            tags = Tag.objects.filter(category=category)
+            tag_data = [{'id': tag.id, 'name': tag.name} for tag in tags]
+            return JsonResponse({'tags': tag_data})
+        except Category.DoesNotExist:
+            return JsonResponse({'tags': []})
+    return JsonResponse({'tags': []})

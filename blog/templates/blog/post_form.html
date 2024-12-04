@@ -1,11 +1,87 @@
-<!-- blog/templates/blog/post_form.html -->
-{% extends 'blog/base.html' %}
-
+{% load static %}
+{% load widget_tweaks %}
 {% block content %}
-<h2>Create a New Post</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Post</button>
-</form>
+    <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+    <div class="container mt-5" id="post-form-container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <h1 class="text-center mb-4">Create New Post</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Title Section -->
+                    <div class="form-group mb-4">
+                        <label for="id_title">Title</label>
+                        {{ form.title|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Category Section -->
+                    <div class="form-group mb-4">
+                        <label for="id_category">Category</label>
+                        {{ form.category|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Content Section -->
+                    <div class="form-group mb-4">
+                        <label for="id_content">Content</label>
+                        {{ form.content|add_class:"form-control" }}
+                    </div>
+
+                    <!-- Tags and Image Section -->
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="id_tags">Tags</label>
+                                <select name="tags" class="form-control" id="id_tags" multiple>
+                                    <!-- Opsi tag akan dimuat melalui AJAX -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="id_image">Image</label>
+                                {{ form.image|add_class:"form-control-file" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Create Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('id_category').addEventListener('change', function () {
+            let category_id = this.value;
+
+            // Lakukan request AJAX untuk mendapatkan tags berdasarkan kategori yang dipilih
+            fetch("{% url 'get_tags_by_category' %}?category_id=" + category_id)
+
+                .then(response => response.json())
+                .then(data => {
+                    let tagsSelect = document.getElementById('id_tags');
+                    tagsSelect.innerHTML = ''; // Kosongkan opsi yang ada
+
+                    // Tambahkan opsi default
+                    let defaultOption = document.createElement("option");
+                    defaultOption.text = "Select tags";
+                    tagsSelect.add(defaultOption);
+
+                    // Tambahkan opsi tags baru
+                    data.tags.forEach(function(tag) {
+                        let option = document.createElement("option");
+                        option.value = tag.id;
+                        option.text = tag.name;
+                        option.selected = false; // Tidak memilih secara otomatis
+                        tagsSelect.add(option);
+                    });
+                })
+                .catch(error => console.log('Error:', error));
+        });
+    </script>
 {% endblock %}

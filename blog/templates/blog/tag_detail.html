@@ -1,13 +1,14 @@
-<!-- blog/tag_detail.html -->
-<h1>Posts with Tag: {{ tag.name }}</h1>
+{% extends 'blog/base.html' %}
 
-<ul>
-    {% for post in posts %}
-        <li>
-            <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a> -
-            <small>by {{ post.author.username }} on {{ post.created_at }}</small>
-        </li>
-    {% empty %}
-        <p>No posts found with this tag.</p>
-    {% endfor %}
-</ul>
+{% block content %}
+  <h1>Tag: {{ tag.name }}</h1>
+  <h3>Posts with this tag:</h3>
+  {% for post in tag.post_set.all %}
+    <div>
+      <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+      <p>{{ post.content|truncatewords:30 }}</p>
+    </div>
+  {% empty %}
+    <p>No posts with this tag yet.</p>
+  {% endfor %}
+{% endblock %}

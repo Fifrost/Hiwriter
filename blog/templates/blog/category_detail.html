@@ -1,13 +1,14 @@
-<!-- blog/category_detail.html -->
-<h1>Posts in Category: {{ category.name }}</h1>
+{% extends 'blog/base.html' %}
 
-<ul>
-    {% for post in posts %}
-        <li>
-            <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a> -
-            <small>by {{ post.author.username }} on {{ post.created_at }}</small>
-        </li>
-    {% empty %}
-        <p>No posts found in this category.</p>
-    {% endfor %}
-</ul>
+{% block content %}
+  <h1>Category: {{ category.name }}</h1>
+  <h3>Posts in this category:</h3>
+  {% for post in category.post_set.all %}
+    <div>
+      <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
+      <p>{{ post.content|truncatewords:30 }}</p>
+    </div>
+  {% empty %}
+    <p>No posts in this category yet.</p>
+  {% endfor %}
+{% endblock %}

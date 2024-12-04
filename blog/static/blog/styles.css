@@ -263,3 +263,67 @@
 .register-page .login-link a:hover {
     text-decoration: underline;
 }
+
+/* post_form */
+#post-form-container {
+    max-width: 800px; /* Mengatur lebar maksimal form */
+    margin: 0 auto; /* Memusatkan form */
+    padding: 20px; /* Memberikan ruang di sekitar form */
+}
+
+#post-form-container h1 {
+    font-size: 1.8rem;
+    color: #343a40;
+    text-align: center; /* Memastikan judul berada di tengah */
+    margin-bottom: 20px;
+}
+
+#post-form-container form {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Membuat setiap form group memiliki jarak yang cukup */
+#post-form-container .form-group {
+    margin-bottom: 20px;
+}
+
+/* Membuat input dan select lebih responsif */
+#post-form-container .form-control,
+#post-form-container .form-control-file {
+    width: 100%; /* Membuat form lebih lebar */
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* Pengaturan tombol */
+#post-form-container .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 8px;
+    padding: 12px;
+    width: 100%; /* Tombol mengikuti lebar form */
+}
+
+#post-form-container .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Menambah padding pada kolom tags dan image untuk responsivitas */
+#post-form-container .col-12.col-md-6 {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Memastikan form tags dan image rapi pada ukuran mobile */
+@media (max-width: 767px) {
+    #post-form-container .row.mb-4 {
+        flex-direction: column;
+    }
+}
+
+
+

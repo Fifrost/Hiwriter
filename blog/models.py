@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import Group
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -20,7 +21,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -60,3 +60,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+@receiver(post_save, sender=User)
+def assign_default_group(sender, instance, created, **kwargs):
+    if created and not instance.groups.exists():
+        default_group, _ = Group.objects.get_or_create(name="Staff")
+        instance.groups.add(default_group)

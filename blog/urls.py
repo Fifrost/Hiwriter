@@ -23,5 +23,5 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('register/', views.register, name='register'),
     path('get-tags/<int:category_id>/', views.get_tags, name='get_tags'),  # Endpoint untuk mendapatkan tag
-    path('get-tags-by-category/', views.get_tags_by_category, name='get_tags_by_category')
+    path('get-tags-by-category/', views.get_tags_by_category, name='get_tags_by_category'),
 ]

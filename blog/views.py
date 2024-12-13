@@ -29,6 +29,28 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        post = form.save(commit=False)  # Jangan simpan dulu
+
+        # Simpan terlebih dahulu untuk mendapatkan ID
+        post.save()
+
+        # Ambil tags yang dipilih
+        selected_tags = self.request.POST.getlist('tags')  # Mendapatkan ID tag yang dipilih
+        post.tags.set(selected_tags)  # Menetapkan tags ke post yang baru
+        post.save()  # Simpan ulang setelah menetapkan tags
+
+        return super().form_valid(form)
+
+
+# Edit Post
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
         post = form.save(commit=False)
 
         # Menetapkan tags ke post yang baru
@@ -39,14 +61,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         post.save()  # Simpan ulang
 
         return super().form_valid(form)
-
-# Edit Post
-class PostUpdateView(LoginRequiredMixin, UpdateView):
-    model = Post
-    form_class = PostForm
-    template_name = 'blog/post_form.html'
-    success_url = reverse_lazy('home')
-
 
 # Delete Post
 class PostDeleteView(LoginRequiredMixin, DeleteView):

@@ -1,14 +1,27 @@
 {% extends 'blog/base.html' %}
 
+{% block title %}Category: {{ category.name }}{% endblock %}
+
 {% block content %}
-  <h1>Category: {{ category.name }}</h1>
-  <h3>Posts in this category:</h3>
-  {% for post in category.post_set.all %}
-    <div>
-      <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
-      <p>{{ post.content|truncatewords:30 }}</p>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center mb-4">Category: <span class="text-primary">{{ category.name }}</span></h1>
+            <h3 class="mb-3">Posts in this category:</h3>
+            {% for post in category.post_set.all %}
+                <div class="card mb-3 shadow">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-dark">{{ post.title }}</a>
+                        </h4>
+                        <p class="card-text text-muted">{{ post.content|truncatewords:30 }}</p>
+                        <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">No posts in this category yet.</p>
+            {% endfor %}
+        </div>
     </div>
-  {% empty %}
-    <p>No posts in this category yet.</p>
-  {% endfor %}
+</div>
 {% endblock %}

@@ -33,6 +33,18 @@
                         <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid rounded shadow" style="max-height: 400px;">
                     </div>
                     {% endif %}
+
+                    <!-- Fitur Like -->
+                <div class="mt-4">
+                    <button id="like-button" data-post-id="{{ post.id }}" class="btn btn-outline-primary">
+                        {% if user.is_authenticated and is_liked %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>
+                    <span id="like-count">{{ post.likes.count }} Likes</span>
+                </div>
                 </div>
             </div>
 
@@ -70,4 +82,30 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript untuk fitur Like -->
+<script>
+    document.getElementById('like-button').addEventListener('click', function() {
+        const postId = this.getAttribute('data-post-id');
+        const likeButton = this;
+        const likeCount = document.getElementById('like-count');
+
+        fetch(`/like/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.liked) {
+                likeButton.textContent = 'Unlike';
+            } else {
+                likeButton.textContent = 'Like';
+            }
+            likeCount.textContent = `${data.total_likes} Likes`;
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
 {% endblock %}

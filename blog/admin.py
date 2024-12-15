@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Profile , Category, Tag
+from .models import Post, Comment, Profile , Category, Tag, Like
 from django.contrib.auth.models import Group
 
 class PostAdmin(admin.ModelAdmin):
@@ -9,14 +9,14 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
 
     def get_queryset(self, request):
-        # Batasi queryset untuk Staff
+        #Batasi queryset untuk Staff
         qs = super().get_queryset(request)
         if request.user.groups.filter(name="Staff").exists():
             return qs.filter(author=request.user)
         return qs
 
     def has_delete_permission(self, request, obj=None):
-        # Batasi delete permission untuk Staff
+        #Batasi delete permission untuk Staff
         if request.user.groups.filter(name="Staff").exists():
             return False
         return True
@@ -33,6 +33,7 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Category)
 admin.site.register(Tag)
+admin.site.register(Like)
 
 def create_default_groups():
     superuser_group, _ = Group.objects.get_or_create(name="Superusers")

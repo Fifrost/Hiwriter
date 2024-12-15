@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.http import JsonResponse
 from .forms import PostForm, CommentForm, UserForm, ProfileForm, CustomUserCreationForm
-from .models import Post, Comment, Tag, Category
+from .models import Post, Comment, Tag, Category, Like
 
 
 def landing_page(request):
@@ -142,6 +142,11 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.all()
 
+    # Tambahkan pengecekan apakah pengguna sudah memberi like
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = post.likes.filter(user=request.user).exists()
+
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -157,6 +162,7 @@ def post_detail(request, pk):
         'post': post,
         'comments': comments,
         'form': form,
+        'is_liked': is_liked,  # Tambahkan status like ke context
     }
     return render(request, 'blog/post_detail.html', context)
 
@@ -260,3 +266,16 @@ def get_tags_by_category(request):
         except Category.DoesNotExist:
             return JsonResponse({'tags': []})
     return JsonResponse({'tags': []})
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    if not created:
+        # Jika like sudah ada, maka hapus
+        like.delete()
+        liked = False
+    else:
+        # Jika belum ada, tambahkan like
+        liked = True
+    return JsonResponse({'liked': liked, 'total_likes': post.likes.count()})

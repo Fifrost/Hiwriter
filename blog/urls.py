@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    HomeView, PostCreateView, PostDeleteView, PostUpdateView
+    HomeView, PostCreateView, PostDeleteView, PostUpdateView, like_post
 )
 from . import views
 from django.contrib.auth import views as auth_views
@@ -24,4 +24,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('get-tags/<int:category_id>/', views.get_tags, name='get_tags'),  # Endpoint untuk mendapatkan tag
     path('get-tags-by-category/', views.get_tags_by_category, name='get_tags_by_category'),
+    path('like/<int:post_id>/', like_post, name='like_post'),
 ]
